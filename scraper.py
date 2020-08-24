@@ -2,6 +2,7 @@ import requests  # for http-requests
 from bs4 import BeautifulSoup  # for scraping
 import smtplib  # for emails
 from settings import username, password
+import time
 
 url = 'https://geizhals.de/samsung-c27f398-lc27f398fwuxen-a1490511.html'
 
@@ -48,4 +49,6 @@ def send_mail(title: str, price: float):
     server.quit()
 
 
-check_price(get_title(), get_price())
+while True:
+    check_price(get_title(), get_price())
+    time.sleep(86400)
