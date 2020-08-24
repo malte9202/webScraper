@@ -69,8 +69,8 @@ def send_mail(title: str, price: float):
     server.quit()
 
 
-# while True:
-check_price(get_title(), get_price())
-create_table_prices()
-insert_price(get_price())
-    # time.sleep(86400)
+while True:
+    check_price(get_title(), get_price())
+    create_table_prices()
+    insert_price(get_price())
+    time.sleep(86400)
