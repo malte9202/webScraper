@@ -3,6 +3,26 @@ from bs4 import BeautifulSoup  # for scraping
 import smtplib  # for emails
 from settings import username, password
 import time
+import sqlite3
+from datetime import date
+
+connection = sqlite3.connect('prices.db')
+cursor = connection.cursor()
+
+
+def create_table_prices():
+    create_table_query = 'CREATE TABLE IF NOT EXISTS prices' \
+                         '(date DATE,' \
+                         'price REAL);'
+    cursor.execute(create_table_query)
+    connection.commit()
+
+
+def insert_price(price: float):
+    insert_query = 'INSERT INTO prices VALUES (?, ?);'
+    cursor.execute(insert_query, (date.today(), price))
+    connection.commit()
+
 
 url = 'https://geizhals.de/samsung-c27f398-lc27f398fwuxen-a1490511.html'
 
@@ -11,7 +31,7 @@ headers = {
                   '(KHTML, like Gecko) Version/13.1.2 Safari/605.1.15'
 }
 
-reference_price = 150.00
+reference_price = 120.00
 page = requests.get(url, headers=headers)
 soup = BeautifulSoup(page.content, 'html.parser')
 
@@ -49,6 +69,8 @@ def send_mail(title: str, price: float):
     server.quit()
 
 
-while True:
-    check_price(get_title(), get_price())
-    time.sleep(86400)
+# while True:
+check_price(get_title(), get_price())
+create_table_prices()
+insert_price(get_price())
+    # time.sleep(86400)
