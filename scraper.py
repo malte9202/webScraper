@@ -1,6 +1,7 @@
-import requests
-from bs4 import BeautifulSoup
-import smtplib
+import requests  # for http-requests
+from bs4 import BeautifulSoup  # for scraping
+import smtplib  # for emails
+from settings import username, password
 
 url = 'https://geizhals.de/samsung-c27f398-lc27f398fwuxen-a1490511.html'
 
@@ -24,28 +25,27 @@ def get_price() -> float:
     return price
 
 
-def check_price(price: float):
+def check_price(title: str, price: float):
     if price < reference_price:
-        send_mail()
+        send_mail(title, price)
 
 
-def send_mail():
+def send_mail(title: str, price: float):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
     server.ehlo()
-    server.login('email', 'password')
-    subject = 'Price fell down!'
-    body = 'Check the Geizhals link: https://geizhals.de/samsung-c27f398-lc27f398fwuxen-a1490511.html'
+    server.login(username, password)
+    subject = f'Price Alert: {title} {price}'
+    body = 'Check the link: https://geizhals.de/samsung-c27f398-lc27f398fwuxen-a1490511.html'
     message = f'Subject: {subject}\n\n{body}'
     server.sendmail(
-        'sender',
-        'empfänger',
+        username,
+        username,
+        message
     )
     print('Email has been sent.')
     server.quit()
 
 
-check_price(149)
-
-
+check_price(get_title(), get_price())
